@@ -109,7 +109,7 @@ install_aztec_cli() {
     echo "Aztec CLI 安装失败，未找到 aztec-up 命令。"
     exit 1
   fi
-  aztec-up alpha-testnet
+  aztec-up -v 0.87.2
 }
 
 # 验证 RPC URL 格式（检查是否以 http:// 或 https:// 开头）
@@ -218,8 +218,15 @@ services:
   aztec-sequencer:
     container_name: aztec-sequencer
     network_mode: host
-    image: aztecprotocol/aztec:0.85.0-alpha-testnet.5
+    image: aztecprotocol/aztec:0.87.2
     restart: unless-stopped
+    # --- 在这里添加 logging 配置 --- #
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"  # 设置每个日志文件最大为 100MB
+        max-file: "1"     # 只保留一个日志文件（当前活动的这一个）
+    # --- logging 配置结束 --- #
     environment:
       - ETHEREUM_HOSTS=\${ETHEREUM_HOSTS}
       - L1_CONSENSUS_HOST_URLS=\${L1_CONSENSUS_HOST_URLS}
